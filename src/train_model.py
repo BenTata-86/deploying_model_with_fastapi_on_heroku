@@ -1,5 +1,3 @@
-# Script to train machine learning model.
-
 from .ml.basic_cleaning import basic_cleaning
 from .ml.data import process_data
 from .ml.model import train_model
