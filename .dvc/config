@@ -1,7 +1,2 @@
-[core]
-    remote = myremote
-['remote "myremote"']
-    url = s3://tatacensus
-    region = us-east-1
 ['remote "s3remote"']
     url = s3://tatacensus
