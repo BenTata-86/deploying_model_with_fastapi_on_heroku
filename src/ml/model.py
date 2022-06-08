@@ -30,6 +30,7 @@ def train_model(X_train, y_train):
 
 
     model = cv_rfc.best_estimator_
+    return model
 
 def compute_model_metrics(y, preds):
     """

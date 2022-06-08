@@ -1,8 +1,10 @@
+import os
 import pandas as pd
 from joblib import dump
+from sklearn.model_selection import train_test_split
 
 from ml.preprocess_data import process_data
-from ml.model import train_model
+from ml.model import *
 
 
 
@@ -12,23 +14,21 @@ def load_data(path):
     return X
 
 
-# Process the train data with the process_data function
-def processing_data(X, cat_features):
-    
-    return process_data(
-        X, categorical_features=cat_features, label="salary", training=True)
 
 # Train and save a model.
 
-def train_save_model(X_train, y_train, encoder, pth):
+def train_save_model(X_train, y_train, encoder, lb, pth):
 
     model = train_model(X_train, y_train)
 
-    dump(model, f"{pth}/model.joblib")
-    dump(encoder, f"{pth}/encoder.joblib")
+    dump(model, f"{pth}/model.pkl")
+    dump(encoder,f"{pth}/encoder.pkl")
+    dump(lb, f"{pth}/lb.pkl")
+    return model
 
 
 def main():
+    #Path for cooked data
     path= 's3://tatacensus/6f/3b87232b567a20d00805ddda4d95eb'
 
     # Define categorical Features.
@@ -42,13 +42,26 @@ def main():
     "sex",
     "native-country",
     ]
-    pth = '/home/bshegitim1/udacity_mlops/deploying_model_with_fastapi_on_heroku/model'
-
+    #Setting root directory
+    ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+    #Setting model directory
+    model_pth = f'{ROOT_DIR}/model'
+    #Load data
     X = load_data(path=path)
-
-    X_train, y_train, encoder,_ = processing_data(X, cat_features)
-
-    train_save_model(X_train=X_train, y_train=y_train, encoder= encoder, pth=pth)
+    #train and test split data
+    train, test = train_test_split(X, test_size=0.20)
+    train.to_csv(f"{ROOT_DIR}/data/train.csv")
+    test.to_csv(f"{ROOT_DIR}/data/test.csv")
+    #Process Data
+    X_train, y_train, encoder, lb = process_data(
+        X=train, categorical_features=cat_features, label="salary", training=True)
+    #Train Data and save model and encoders
+    model=train_save_model(
+        X_train=X_train, y_train=y_train, encoder=encoder, lb=lb, pth=model_pth
+        )
+    preds=inference(model=model, X=X_train)
+    precision,_,-= compute_model_metrics(y=y_train, preds=preds)
+    print(precision)
     
 
 if __name__ == "__main__":
