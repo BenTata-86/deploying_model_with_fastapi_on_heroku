@@ -1,5 +1,7 @@
+import json
 import os
 import pandas as pd
+import numpy as np
 from joblib import dump
 from sklearn.model_selection import train_test_split
 
@@ -12,19 +14,6 @@ from ml.model import *
 def load_data(path):
     X = pd.read_csv(path)
     return X
-
-
-
-# Train and save a model.
-
-def train_save_model(X_train, y_train, encoder, lb, pth):
-
-    model = train_model(X_train, y_train)
-
-    dump(model, f"{pth}/model.pkl")
-    dump(encoder,f"{pth}/encoder.pkl")
-    dump(lb, f"{pth}/lb.pkl")
-    return model
 
 
 def main():
@@ -44,24 +33,47 @@ def main():
     ]
     #Setting root directory
     ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+
     #Setting model directory
     model_pth = f'{ROOT_DIR}/model'
+
     #Load data
     X = load_data(path=path)
+
     #train and test split data
     train, test = train_test_split(X, test_size=0.20)
-    train.to_csv(f"{ROOT_DIR}/data/train.csv")
-    test.to_csv(f"{ROOT_DIR}/data/test.csv")
+
     #Process Data
-    X_train, y_train, encoder, lb = process_data(
+    X_train, y_train, encoder,lb = process_data(
         X=train, categorical_features=cat_features, label="salary", training=True)
+
     #Train Data and save model and encoders
-    model=train_save_model(
-        X_train=X_train, y_train=y_train, encoder=encoder, lb=lb, pth=model_pth
+    model = train_model(X_train=X_train, y_train=y_train)
+    dump(model, f"{model_pth}/model.joblib")
+    dump(encoder,f"{model_pth}/encoder.joblib")
+
+
+    #Evaluate Model Metrics on Test data
+    X_test, y_test, _,_ = process_data(
+    test, cat_features, label='salary',training=False, encoder=encoder,lb=lb)
+
+    test_preds = inference(model=model, X=X_test)
+
+    test_prc, test_rcl, test_beta = compute_model_metrics(
+        y=y_test, preds=test_preds
+    )
+    testing_metric = "Precision: %s " \
+                              "Recall: %s FBeta: %s" % (test_prc, test_rcl, test_beta)
+    with open(f'{model_pth}/output.txt', 'w') as f:
+        f.write(testing_metric + '\n')
+
+    #Evaluate Model on slices of Data
+
+    with open(f"{model_pth}/slice.txt", "w") as f:
+        model_metrics=compute_score_per_slice(
+            model=model, data=test, encoder=encoder, lb=lb, cat_features=cat_features
         )
-    preds=inference(model=model, X=X_train)
-    precision,_,-= compute_model_metrics(y=y_train, preds=preds)
-    print(precision)
+        f.write(json.dumps(model_metrics))
     
 
 if __name__ == "__main__":

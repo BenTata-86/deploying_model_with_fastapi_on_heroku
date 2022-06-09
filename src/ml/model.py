@@ -1,6 +1,7 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
+from ml.preprocess_data import process_data
 
 
 def train_model(X_train, y_train):
@@ -70,3 +71,36 @@ def inference(model, X):
     """
     preds = model.predict(X)
     return preds
+
+def compute_score_per_slice(model, data, encoder,
+                            lb, cat_features):
+    """
+    Compute score in a category class slice
+    Parameters:
+    
+    model
+    data
+    encoder
+    lb
+
+    Returns:
+    metrics_dict
+    """
+    metrics_dict = {}
+    for cls in data['marital-status']:
+        temp_df = data[data['marital-status'] == cls]
+
+        slice_feature, slice_label, _, _ = process_data(
+                    temp_df,
+                    categorical_features=cat_features, training=False,
+                    label="salary", encoder=encoder, lb=lb)
+
+        slice_pred = model.predict(slice_feature)
+
+        prc, rcl, fb = compute_model_metrics(slice_label, slice_pred)
+
+        metrics_dict[cls] = {"precision": prc, "recall": rcl, "fbeta": fb}
+    return metrics_dict
+        
+
+
