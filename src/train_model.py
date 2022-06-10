@@ -26,7 +26,7 @@ def train_save_model(X, y, encoder, pth):
 def save_metrics(metric, pth, file):
 
     with open(f'{pth}/{file}.txt', 'w') as f:
-        f.write(json.dumps(metric) + '\n')
+        f.write(json.dumps(metric + '\n'))
 
 
 

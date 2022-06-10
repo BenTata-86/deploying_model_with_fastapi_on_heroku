@@ -2,7 +2,8 @@ import os
 import pytest
 import pandas as pd
 from requests import session
-from ml.model import train_model
+from sklearn.ensemble import RandomForestClassifier
+from ml.model import *
 from train_model import train_save_model, save_metrics
 from ml.preprocess_data import process_data
 
@@ -45,13 +46,42 @@ def processing_data(data, cat_features):
     return (X, y, encoder, lb)
 
 @pytest.fixture(scope=session)
-def best_model(processing_data):
-    X,y,_,_ = processing_data
+def saving_model(processing_data):
+    X,y,encoder,_ = processing_data
+    pth= f"{ROOT_DIR}/model"
 
-    return train_save_model(X, y)
+    return train_save_model(X, y, encoder, pth)
 
-@pytest.fixture(scope=session)
-def save_model(best_model):
+# Testing model
+def test_model(saving_model):
+    '''
+    Test model and saved model
+    '''
+
+    best_model= saving_model
+    assert isinstance(best_model, RandomForestClassifier)
+
+    try:
+        assert os.path.isfile(f"{ROOT_DIR}/model/model.joblib")
+    except AssertionError as err:
+        raise err
+
+def test_model_metrics(processing_data, saving_model):
+    '''
+    Testing model metrics
+    '''
+    X, y, _, _ = processing_data
+    model = saving_model
+
+    preds = inference(model, X)
+
+    precision, recall, fbeta = compute_model_metrics(y, preds)
+    assert isinstance(precision, float)
+    assert isinstance(recall, float)
+    assert isinstance(fbeta, float)
+
+
+
 
     
 
