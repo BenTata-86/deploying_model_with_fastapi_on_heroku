@@ -19,7 +19,7 @@ app = FastAPI()
 class Person(BaseModel):
     age: int
     workclass : str
-    fnlgt : str
+    fnlgt : int
     education : str
     marital_status : str = Field(alias="marital-status")
     occupation : str

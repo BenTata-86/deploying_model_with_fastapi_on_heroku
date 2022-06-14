@@ -1,7 +1,7 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from ml.preprocess_data import process_data
+from . import preprocess_data
 
 
 def train_model(X_train, y_train):
@@ -90,7 +90,7 @@ def compute_score_per_slice(model, data, encoder,
     for cls in data['marital-status']:
         temp_df = data[data['marital-status'] == cls]
 
-        slice_feature, slice_label, _, _ = process_data(
+        slice_feature, slice_label, _, _ = preprocess_data.process_data(
                     temp_df,
                     categorical_features=cat_features, training=False,
                     label="salary", encoder=encoder, lb=lb)
