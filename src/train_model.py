@@ -26,13 +26,11 @@ def train_save_model(X, y, encoder, pth):
 def save_metrics(metric, pth, file):
 
     with open(f'{pth}/{file}.txt', 'w') as f:
-        f.write(json.dumps(metric + '\n'))
+        f.write(json.dumps(metric ))
 
 
 
 def main():
-    #Path for cooked data
-    path= 's3://tatacensus/6f/3b87232b567a20d00805ddda4d95eb'
 
     # Define categorical Features.
     cat_features = [
@@ -48,11 +46,12 @@ def main():
     #Setting root directory
     ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
-    #Setting model directory
+    #Setting model & data directory
     model_pth = f'{ROOT_DIR}/model'
+    data_pth = f"{ROOT_DIR}/data/cooked_data.csv"
 
     #Load data
-    X = load_data(path=path)
+    X = load_data(path=data_pth)
 
     #train and test split data
     train, test = train_test_split(X, test_size=0.20)

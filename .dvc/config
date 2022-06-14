@@ -1,2 +1,4 @@
+[core]
+    autostage = true
 ['remote "s3remote"']
     url = s3://tatacensus

@@ -15,14 +15,16 @@ def basic_cleaning(path):
     #Read data from path
     df = pd.read_csv(path, skipinitialspace=True ,na_values='?')
 
+    #Drop none values
+    df.dropna(inplace=True)
+
     #Drop duplicates
-    df = df.drop_duplicates().reset_index(drop=True)
+    df.drop_duplicates(inplace=True)
 
     #Drop capital_gain, capital_loss
-    df = df.drop(columns=["capital-gain", "capital-loss"])
+    df = df.drop(columns=["capital-gain", "capital-loss", "education-num"])
 
-    #Replace na with 'unknown'
-    df = df.replace(np.nan, "unknown")
+    
     return df
 
 
