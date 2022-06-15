@@ -36,7 +36,7 @@ def main():
     print("importing data...")
     ROOT_DIR = os.path.dirname(os.path.abspath("/home/bshegitim1/udacity_mlops/deploying_model_with_fastapi_on_heroku/src"))
     filename = f'{ROOT_DIR}/data/cooked_data.csv'
-    df.to_csv(filename)
+    df.to_csv(filename, index=False)
     print("save ..")
 
         
