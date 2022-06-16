@@ -30,19 +30,19 @@ class Person(BaseModel):
     native_country : str = Field(alias="native-country")
 
     class Config:
-        schema = {
+        schema_extra = {
             "example" : {
                 "age": 42,
                 "workclass": "Private",
-                "fnlgt": 77000,
+                "fnlgt": 150000,
                 "education": "Bachelors",
-                "marital_status": "Divorced",
-                "occupation": "Sales",
-                "relationship": "Own-child",
-                "race": "Black",
+                "marital-status": "Married-civ-spouse",
+                "occupation": "Exec-managerial",
+                "relationship": "Husband",
+                "race": "White",
                 "sex": "Male",
-                "HoursPerWeek": "30",
-                "native_country": "Ecuador"
+                "hours-per-week": 45,
+                "native-country": "United-States"
                 }
         }
 
@@ -69,7 +69,11 @@ async def income_prediction(info: Person):
     X,_,_,_ = process_data(
         df, cat_features, label=None, training =False,encoder=encoder, lb=None
         )
-    prediction = ">50K" if inference(best_model, X)==0 else "<=50k"
+    predicts = inference(best_model, X)
+    if predicts == 0:
+        prediction = 'equal or below  50K$'
+    else:
+        prediction = "above 50K$"
 
     return {"prediction": prediction}
     
