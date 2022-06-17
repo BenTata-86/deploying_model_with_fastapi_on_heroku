@@ -1,4 +1,6 @@
 import requests
+import json
+
 data = {
             'age': 35,
             'workclass': 'Private',
@@ -13,7 +15,7 @@ data = {
             'nativeCountry': 'United-States'
     }
 
-r = requests.post('https://census-income-fastapi-app.herokuapp.com/', json=data)
+r = requests.post('https://census-income-fastapi-app.herokuapp.com/', data=json.dumps(data))
 
 assert r.status_code == 200
 
