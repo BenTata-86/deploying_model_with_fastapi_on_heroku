@@ -15,7 +15,7 @@ data = {
             'nativeCountry': 'United-States'
     }
 
-r = requests.post('https://census-income-fastapi-app.herokuapp.com/', data=json.dumps(data))
+r = requests.post('https://census-income-fastapi-app.herokuapp.com/income_class/', data=json.dumps(data))
 
 assert r.status_code == 200
 
