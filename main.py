@@ -5,13 +5,12 @@ from pydantic import BaseModel, Field
 import pandas as pd
 from src.ml.preprocess_data import process_data
 from src.ml.model import inference
-from sklearn.preprocessing import LabelBinarizer
+
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__)))
 
-best_model = load('model/model.joblib')
-encoder = load('model/encoder.joblib')
-lb = LabelBinarizer()
+best_model = load(f'{ROOT_DIR}/model/model.joblib')
+encoder = load(f'{ROOT_DIR}/model/encoder.joblib')
 
 if "DYNO" in os.environ and os.path.isdir(".dvc"):
     os.system("dvc config core.no_scm true")
