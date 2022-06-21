@@ -87,19 +87,20 @@ def compute_score_per_slice(model, data, encoder,
     metrics_dict
     """
     metrics_dict = {}
-    for cls in data['marital-status']:
-        temp_df = data[data['marital-status'] == cls]
+    for cat in cat_features:
+        for cls in data[cat].unique():
+            temp_df = data[data[cat] == cls]
 
-        slice_feature, slice_label, _, _ = preprocess_data.process_data(
-                    temp_df,
-                    categorical_features=cat_features, training=False,
-                    label="salary", encoder=encoder, lb=lb)
+            slice_feature, slice_label, _, _ = preprocess_data.process_data(
+                        temp_df,
+                        categorical_features=cat_features, training=False,
+                        label="salary", encoder=encoder, lb=lb)
 
-        slice_pred = model.predict(slice_feature)
+            slice_pred = model.predict(slice_feature)
 
-        prc, rcl, fb = compute_model_metrics(slice_label, slice_pred)
+            prc, rcl, fb = compute_model_metrics(slice_label, slice_pred)
 
-        metrics_dict[cls] = {"precision": prc, "recall": rcl, "fbeta": fb}
+            metrics_dict[cls] = {"precision": prc, "recall": rcl, "fbeta": fb}
     return metrics_dict
         
 
