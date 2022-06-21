@@ -5,8 +5,8 @@ import numpy as np
 from joblib import dump
 from sklearn.model_selection import train_test_split
 
-from . ml.preprocess_data import process_data
-from . ml.model import *
+from ml.preprocess_data import process_data
+from ml.model import *
 
 
 
