@@ -3,22 +3,22 @@ import pytest
 import pandas as pd
 from requests import session
 from sklearn.ensemble import RandomForestClassifier
-from . ml.model import *
-from . train_model import train_save_model
-from ml import preprocess_data
+from .ml.preprocess_data import process_data
+from .ml.model import *
+from .train_model import train_save_model
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
 @pytest.fixture(scope="session")
 def data():
 
-    path = 's3://tatacensus/6f/3b87232b567a20d00805ddda4d95eb'
+    path = 'data/cooked_data.csv'
     df = pd.read_csv(path)
 
     return df
 
 
-@pytest.fixture(scope=session)
+@pytest.fixture(scope="session")
 def cat_features():
     categorical_features = [
         "workclass",
@@ -32,12 +32,12 @@ def cat_features():
     ]
     return categorical_features
 
-@pytest.fixture(scope=session)
+@pytest.fixture(scope="session")
 def processing_data(data, cat_features):
     """
         returns (X, y, encoder, lb)
     """
-    (X, y, encoder, lb) =  preprocess_data.process_data(
+    (X, y, encoder, lb) =  process_data(
         data,
         categorical_features=cat_features, 
         label="salary", 
@@ -45,7 +45,7 @@ def processing_data(data, cat_features):
         )
     return (X, y, encoder, lb)
 
-@pytest.fixture(scope=session)
+@pytest.fixture(scope="session")
 def saving_model(processing_data):
     X,y,encoder,_ = processing_data
     pth= f"{ROOT_DIR}/model"
@@ -54,8 +54,9 @@ def saving_model(processing_data):
 
 # Testing Inference
 
-def test_inference(model, processing_data):
+def test_inference(saving_model, processing_data):
     X, y,_,_ = processing_data
+    model = saving_model
     y_pred = inference(model, X)
 
     assert len(y_pred) == len(y)
@@ -89,10 +90,3 @@ def test_model_metrics(processing_data, saving_model):
     assert isinstance(precision, float)
     assert isinstance(recall, float)
     assert isinstance(fbeta, float)
-
-
-
-
-
-    
-
