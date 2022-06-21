@@ -1,5 +1,6 @@
 from main import app
 import os
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from src.ml.model import inference, compute_model_metrics
 
