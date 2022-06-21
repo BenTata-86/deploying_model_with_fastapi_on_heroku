@@ -1,7 +1,7 @@
 from main import app
 import os
 from sklearn.ensemble import RandomForestClassifier
-from src.ml.model import *
+from src.ml.model import inference, compute_model_metrics
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
