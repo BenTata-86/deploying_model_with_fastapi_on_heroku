@@ -2,13 +2,14 @@ import pytest
 import os
 import pandas as pd
 from fastapi.testclient import TestClient
-from .. src.train_model import train_save_model
-from .. src.ml.preprocess_data import process_data
+from src.train_model import train_save_model
+from src.ml.preprocess_data import process_data
 from main import app
+
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def data():
 
     path = 'data/cooked_data.csv'
@@ -16,7 +17,7 @@ def data():
 
     return df
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def cat_features():
     categorical_features = [
         "workclass",
@@ -30,7 +31,7 @@ def cat_features():
     ]
     return categorical_features
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def processing_data(data, cat_features):
     """
         returns (X, y, encoder, lb)
@@ -43,7 +44,7 @@ def processing_data(data, cat_features):
         )
     return (X, y, encoder, lb)
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def saving_model(processing_data):
     X,y,encoder,_ = processing_data
     pth= f"{ROOT_DIR}/model"
