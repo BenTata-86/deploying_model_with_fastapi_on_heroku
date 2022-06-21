@@ -12,7 +12,7 @@ ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 @pytest.fixture
 def data():
 
-    path = 'data/cooked_data.csv.dvc'
+    path = "s3://tatacensus/ad/1e97076914e59869e08fb19f531249"
     df = pd.read_csv(path)
 
     return df
