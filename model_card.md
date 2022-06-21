@@ -17,7 +17,15 @@ census data : https://archive.ics.uci.edu/ml/datasets/census+income
 ## Metrics
 The performance of the model is measured with the metrics : Precision, Recall
 and F1 Beta score.
+precision:0.7757909215955984
+recall:0.3863013698630137
+fbeta:0.5157750342935529
 ## Ethical Considerations
-The model was also evaluated in 'marital-status' as well for ethical considerations
+The model was also evaluated for all different classes. Since there are classes
+with less data, the results for the less represented classes are not predicted 
+well. For example "Married-civ-spouse" class in "marital-status" is a well represented
+class and the prediction results are close to the overall metrics. However "Divorced"
+has a precision: 1.0 but recall and f1 beta scores are : 0 due to its class is
+a less represented class. This should be kept in mind for Ethical Considerations
 ## Caveats and Recommendations
 The data have some class imbalances and this may indicate biases on those classes
