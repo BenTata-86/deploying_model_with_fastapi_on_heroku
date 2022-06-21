@@ -3,9 +3,9 @@ import pytest
 import pandas as pd
 from requests import session
 from sklearn.ensemble import RandomForestClassifier
-from ..src.ml.preprocess_data import process_data
-from ..src.ml.model import *
-from ..src.train_model import train_save_model
+from src.ml.preprocess_data import process_data
+from src.ml.model import *
+from src.train_model import train_save_model
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 

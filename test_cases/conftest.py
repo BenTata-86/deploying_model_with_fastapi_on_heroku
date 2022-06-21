@@ -2,8 +2,8 @@ import pytest
 import os
 import pandas as pd
 from fastapi.testclient import TestClient
-from  src.train_model import train_save_model
-from  src.ml.preprocess_data import process_data
+from .. src.train_model import train_save_model
+from .. src.ml.preprocess_data import process_data
 from main import app
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
