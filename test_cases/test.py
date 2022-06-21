@@ -3,54 +3,12 @@ import pytest
 import pandas as pd
 from requests import session
 from sklearn.ensemble import RandomForestClassifier
-from .ml.preprocess_data import process_data
-from .ml.model import *
-from .train_model import train_save_model
+from ..src.ml.preprocess_data import process_data
+from ..src.ml.model import *
+from ..src.train_model import train_save_model
 
 ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 
-@pytest.fixture(scope="session")
-def data():
-
-    path = 'data/cooked_data.csv'
-    df = pd.read_csv(path)
-
-    return df
-
-
-@pytest.fixture(scope="session")
-def cat_features():
-    categorical_features = [
-        "workclass",
-        "education",
-        "marital-status",
-        "occupation",
-        "relationship",
-        "race",
-        "sex",
-        "native-country",
-    ]
-    return categorical_features
-
-@pytest.fixture(scope="session")
-def processing_data(data, cat_features):
-    """
-        returns (X, y, encoder, lb)
-    """
-    (X, y, encoder, lb) =  process_data(
-        data,
-        categorical_features=cat_features, 
-        label="salary", 
-        training=True,
-        )
-    return (X, y, encoder, lb)
-
-@pytest.fixture(scope="session")
-def saving_model(processing_data):
-    X,y,encoder,_ = processing_data
-    pth= f"{ROOT_DIR}/model"
-
-    return train_save_model(X, y, encoder, pth)
 
 # Testing Inference
 
